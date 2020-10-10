@@ -3,6 +3,7 @@ import RPi.GPIO as GPIO
 import random
 import ES2EEPROMUtils
 import os
+from smbus2 import SMBUS
 
 # some global variables that need to change as we run the program
 end_of_game = None  # set if the user wins or ends the game
@@ -12,7 +13,7 @@ LED_value = [11, 13, 15]
 LED_accuracy = 32
 btn_submit = 16
 btn_increase = 18
-buzzer = None
+buzzer = 33
 eeprom = ES2EEPROMUtils.ES2EEPROM()
 
 
@@ -67,6 +68,19 @@ def setup():
     # Setup regular GPIO
     # Setup PWM channels
     # Setup debouncing and callbacks
+    GPIO.setmode(GPIO.BOARD)
+
+    GPIO.setup(LED_value, GPIO.OUT)
+    GPIO.setup(buzzer, GPIO.OUT)
+    GPIO.setup(LED_accuracy, GPIO.OUT)
+    GPIO.setup(btn_increase, GPIO.IN)
+    GPIO.setup(btn_submit, GPIO.IN)
+
+    global buzzer_pwm = GPIO.PWM(buzzer, 100)
+    buzzer_pwm.start(0)
+
+    global eeprom_bus = SMBUS(1)
+
     pass
 
 
