@@ -118,7 +118,7 @@ def save_scores(input_scores):
     for i in range(len(input_scores)):
         scores.append(input_scores[i])
     # sort
-    scores.sort(key=lambda scores: scores.get('score'))
+    scores.sort(key=lambda x: x.get('score'), reverse=True)
     # update total amount of scores
     count += len(input_scores) 
     # write new scores
