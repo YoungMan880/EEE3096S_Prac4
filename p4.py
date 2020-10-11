@@ -17,10 +17,6 @@ btn_increase = 18
 buzzer = 33
 eeprom = ES2EEPROMUtils.ES2EEPROM()
 
-
-def main():
-
-
 # Print the game banner
 def welcome():
     os.system('clear')
@@ -68,9 +64,16 @@ def display_scores(count, raw_data):
     # print out the scores in the required format
     pass
 
+# Testing only
+def test():
+    trigger_buzzer(1)
+    trigger_buzzer(2)
+    trigger_buzzer(3)
+    pass
 
 # Gameplay
 def play(random_num):
+    pass
 
 
 # Setup Pins
@@ -194,10 +197,11 @@ def trigger_buzzer(offset):
 if __name__ == "__main__":
     try:
         # Call setup function
-        setup()
-        welcome()
+        test()
+        #setup()
+        #welcome()
         while True:
-            menu()
+            #menu()
             pass
     except Exception as e:
         print(e)
