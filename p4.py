@@ -1,6 +1,7 @@
 # Import libraries
 import RPi.GPIO as GPIO
 import random
+from time import sleep
 import ES2EEPROMUtils
 import os
 from smbus2 import SMBUS
@@ -66,10 +67,8 @@ def display_scores(count, raw_data):
 
 # Testing only
 def test():
-    trigger_buzzer(1)
-    trigger_buzzer(2)
-    trigger_buzzer(3)
-    pass
+    save_scores([{"name": "me", "score": 3}])
+    exit()
 
 # Gameplay
 def play(random_num):
@@ -97,14 +96,18 @@ def fetch_scores():
     scores = []
     temp = {"name": "", "score": 0}
     # Get the scores
-    score_file = open("scores.txt", 'r')
-
-    for line in score_file:
-        score_count += 1
-        data = line.split('-')
-        temp["score"] = data[0]
-        temp["name"] = data[1]
-        scores.append(temp)
+    if os.path.exists("scores.txt"):
+        score_file = open("scores.txt", "r")
+        for line in score_file:
+            score_count += 1
+            line = line.replace("\n", "")
+            if (line != ""):
+                data = line.split('-')
+                temp["score"] = int(data[0])
+                temp["name"] = data[1]
+                scores.append(temp)
+    else:
+       score_file = open("scores.txt", "w")
 
     score_file.close()
     # convert the codes back to ascii
@@ -128,7 +131,7 @@ def save_scores(input_scores):
 
     score_file = open("scores.txt", 'w')
     for score in scores:
-        score_file.write(score["score"] + "-" + score["name"])
+        score_file.write(str(score["score"]) + "-" + score["name"] + '\n')
 
 
 # Generate guess number
@@ -185,11 +188,12 @@ def trigger_buzzer(offset):
     else:
         beeps = 1
     
-    wait = ((1 - (0.005)*beeps)/beeps)
+    wait = ((1 - (0.05)*beeps)/beeps)
 
     for i in range(beeps):
+        print(wait)
         buzzer_pwm.start(50)
-        sleep(0.005)
+        sleep(0.05)
         buzzer_pwm.stop()
         sleep(wait)
 
@@ -197,11 +201,10 @@ def trigger_buzzer(offset):
 if __name__ == "__main__":
     try:
         # Call setup function
-        test()
-        #setup()
-        #welcome()
+        setup()
+        welcome()
         while True:
-            #menu()
+            menu()
             pass
     except Exception as e:
         print(e)
