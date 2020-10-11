@@ -96,20 +96,7 @@ def fetch_scores():
     scores = []
     temp = {"name": "", "score": 0}
     # Get the scores
-    if os.path.exists("scores.txt"):
-        score_file = open("scores.txt", "r")
-        for line in score_file:
-            score_count += 1
-            line = line.replace("\n", "")
-            if (line != ""):
-                data = line.split('-')
-                temp["score"] = int(data[0])
-                temp["name"] = data[1]
-                scores.append(temp)
-    else:
-       score_file = open("scores.txt", "w")
 
-    score_file.close()
     # convert the codes back to ascii
      
     # return back the results
@@ -121,17 +108,10 @@ def save_scores(input_scores):
     # fetch scores
     count, scores = fetch_scores()
     # include new score
-    for i in range(len(input_scores)):
-        scores.append(input_scores[i])
     # sort
-    scores.sort(key=lambda x: x.get('score'), reverse=True)
     # update total amount of scores
     count += len(input_scores) 
     # write new scores
-
-    score_file = open("scores.txt", 'w')
-    for score in scores:
-        score_file.write(str(score["score"]) + "-" + score["name"] + '\n')
 
 
 # Generate guess number
