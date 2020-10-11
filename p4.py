@@ -7,6 +7,7 @@ from smbus2 import SMBUS
 
 # some global variables that need to change as we run the program
 end_of_game = None  # set if the user wins or ends the game
+gScores = [] # Scores from current game
 
 # DEFINE THE PINS USED HERE
 LED_value = [11, 13, 15]
@@ -35,9 +36,11 @@ def welcome():
 
 # Print the game menu
 def menu():
+
     global end_of_game
     option = input("Select an option:   H - View High Scores     P - Play Game       Q - Quit\n")
     option = option.upper()
+
     if option == "H":
         os.system('clear')
         print("HIGH SCORES!!")
@@ -49,6 +52,7 @@ def menu():
         print("Use the buttons on the Pi to make and submit your guess!")
         print("Press and hold the guess button to cancel your game")
         value = generate_number()
+        play(value)
         while not end_of_game:
             pass
     elif option == "Q":
@@ -65,6 +69,10 @@ def display_scores(count, raw_data):
     pass
 
 
+# Gameplay
+def play(random_num):
+
+
 # Setup Pins
 def setup():
     # Setup board mode
@@ -78,14 +86,6 @@ def setup():
     GPIO.setup(LED_accuracy, GPIO.OUT)
     GPIO.setup(btn_increase, GPIO.IN)
     GPIO.setup(btn_submit, GPIO.IN)
-
-    global buzzer_pwm = GPIO.PWM(buzzer, 100)
-    buzzer_pwm.start(0)
-
-    global eeprom_bus = SMBUS(1)
-
-    pass
-
 
 # Load high scores
 def fetch_scores():
@@ -166,14 +166,29 @@ def accuracy_leds():
     pass
 
 # Sound Buzzer
-def trigger_buzzer():
+def trigger_buzzer(offset):
     # The buzzer operates differently from the LED
     # While we want the brightness of the LED to change(duty cycle), we want the frequency of the buzzer to change
     # The buzzer duty cycle should be left at 50%
     # If the user is off by an absolute value of 3, the buzzer should sound once every second
     # If the user is off by an absolute value of 2, the buzzer should sound twice every second
     # If the user is off by an absolute value of 1, the buzzer should sound 4 times a second
-    pass
+    buzzer_pwm = GPIO.PWM(buzzer, 800)
+
+    if (offset == 1):
+        beeps = 4
+    elif (offset == 2):
+        beeps = 2
+    else:
+        beeps = 1
+    
+    wait = ((1 - (0.005)*beeps)/beeps)
+
+    for i in range(beeps):
+        buzzer_pwm.start(50)
+        sleep(0.005)
+        buzzer_pwm.stop()
+        sleep(wait)
 
 
 if __name__ == "__main__":
