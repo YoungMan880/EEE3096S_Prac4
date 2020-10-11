@@ -17,6 +17,9 @@ buzzer = 33
 eeprom = ES2EEPROMUtils.ES2EEPROM()
 
 
+def main():
+
+
 # Print the game banner
 def welcome():
     os.system('clear')
@@ -87,23 +90,42 @@ def setup():
 # Load high scores
 def fetch_scores():
     # get however many scores there are
-    score_count = None
+    score_count = 0
+    scores = []
+    temp = {"name": "", "score": 0}
     # Get the scores
-    
+    score_file = open("scores.txt", 'r')
+
+    for line in score_file:
+        score_count += 1
+        data = line.split('-')
+        temp["score"] = data[0]
+        temp["name"] = data[1]
+        scores.append(temp)
+
+    score_file.close()
     # convert the codes back to ascii
-    
+     
     # return back the results
     return score_count, scores
 
 
 # Save high scores
-def save_scores():
+def save_scores(input_scores):
     # fetch scores
+    count, scores = fetch_scores()
     # include new score
+    for i in range(len(input_scores)):
+        scores.append(input_scores[i])
     # sort
+    scores.sort(key=lambda scores: scores.get('score'))
     # update total amount of scores
+    count += len(input_scores) 
     # write new scores
-    pass
+
+    score_file = open("scores.txt", 'w')
+    for score in scores:
+        score_file.write(score["score"] + "-" + score["name"])
 
 
 # Generate guess number
