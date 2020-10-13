@@ -4,7 +4,7 @@ import random
 from time import sleep
 import ES2EEPROMUtils
 import os
-from smbus2 import SMBUS
+import smbus2 as SMBUS
 
 # some global variables that need to change as we run the program
 end_of_game = None  # set if the user wins or ends the game
@@ -67,7 +67,9 @@ def display_scores(count, raw_data):
 
 # Testing only
 def test():
-    save_scores([{"name": "me", "score": 3}])
+    eeprom.write_byte(0x00, 1)
+    #save_scores([{"name": "me", "score": 3}])
+    print(eeprom.read_byte(0x00))
     exit()
 
 # Gameplay
@@ -96,6 +98,7 @@ def fetch_scores():
     scores = []
     temp = {"name": "", "score": 0}
     # Get the scores
+
 
     # convert the codes back to ascii
      
@@ -182,9 +185,10 @@ if __name__ == "__main__":
     try:
         # Call setup function
         setup()
-        welcome()
+       #welcome()
+       test()
         while True:
-            menu()
+            #menu()
             pass
     except Exception as e:
         print(e)
