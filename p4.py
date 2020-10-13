@@ -144,8 +144,8 @@ def save_scores(input_scores):
     # write new scores
     eeprom.write_byte(0, count)
 
-    offset = 0
-    for i in range(1,count+1):
+    offset = 1
+    for i in range(0,count):
 
         temp = [0,0,0,0]
         if (len(scores[i][0]) < 4):
