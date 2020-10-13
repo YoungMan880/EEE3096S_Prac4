@@ -100,25 +100,23 @@ def fetch_scores():
     # get however many scores there are
     score_count = 0
     scores = []
-    temp = ['', 0]
     # Get the scores
     score_count = eeprom.read_byte(0)
     
+    end_flag = False
     for i in range(1, score_count+1):
         current = eeprom.read_block((i*4), 4)
-        end_flag = False
         name = ""
-
-        while (not(end_flag)):
-            if (current[3] != 0):
-                temp[1] = current[3]
-                end_flag = True
-            
-            for j in range(4):
-                name = name + (current[(j])
         
-        temp[0] = name
-        scoes.append(temp)
+        for j in range(4):
+            temp[0] = temp[0] + (current[j])
+        
+        if (current[3] != 0):
+            temp[1] = current[3]        
+        
+        if (end_flag):
+            scores.append(temp)
+            end_flag = False
 
     # return back the results
     return score_count, scores
