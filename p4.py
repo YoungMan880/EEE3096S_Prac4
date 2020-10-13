@@ -67,7 +67,7 @@ def display_scores(count, raw_data):
 
 # Testing only
 def test():
-    eeprom.write_byte(0x00, 1)
+    eeprom.write_byte(0x00, (16))
     #save_scores([{"name": "me", "score": 3}])
     print(eeprom.read_byte(0x00))
     exit()
@@ -186,7 +186,7 @@ if __name__ == "__main__":
         # Call setup function
         setup()
        #welcome()
-       test()
+        test()
         while True:
             #menu()
             pass
