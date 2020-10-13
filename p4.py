@@ -67,10 +67,12 @@ def display_scores(count, raw_data):
 
 # Testing only
 def test():
-    eeprom.clear(4096)
+    eeprom.clear(32)
     eeprom.populate_mock_scores()
+
     num, results = fetch_scores()
     print(results)
+
     #save_scores([{"name": "me", "score": 3}])
     exit()
 
@@ -108,12 +110,12 @@ def fetch_scores():
         name = ""
 
         while (not(end_flag)):
-            if (current[3] != 255):
+            if (current[3] != 0):
                 temp[1] = current[3]
                 end_flag = True
             
             for j in range(4):
-                name = name + (current[(i*4 )+ j])
+                name = name + (current[(j])
         
         temp[0] = name
         scoes.append(temp)
