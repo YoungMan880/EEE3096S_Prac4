@@ -73,7 +73,11 @@ def test():
     num, results = fetch_scores()
     print(results)
 
-    #save_scores([{"name": "me", "score": 3}])
+    save_scores([{"JAC", 3}])
+
+    num, results = fetch_scores()
+    print(results)
+    
     exit()
 
 # Gameplay
@@ -132,11 +136,40 @@ def save_scores(input_scores):
     # fetch scores
     count, scores = fetch_scores()
     # include new score
+    scores.extend(input_scores)
     # sort
+    scores.sort(key=lambda x: x[1])
     # update total amount of scores
     count += len(input_scores) 
     # write new scores
+    eeprom.write_byte(0, count)
 
+    offset = 0;
+    for i in range(1,count+1):
+
+        temp = [0,0,0,0]
+        if (len(scores[i][0]) < 4):
+            temp[0] = scores[i][0][0]
+            temp[1] = scores[i][0][1]
+            temp[2] = scores[i][0][2]
+            temp[3] = scores[i][1]
+
+            eeprom.write_block(i + offset, temp)
+        else:
+            end_flag = False
+            j = 0
+            while (not(end_flag)):
+                temp = [0,0,0,0]
+
+                temp[0] = scores[i][0][j+0]
+                temp[1] = scores[i][0][j+1]
+                temp[2] = scores[i][0][j+2]
+
+                eeprom.write_block(i + offset, temp)
+                offset += 1
+                j += 1
+            
+        
 
 # Generate guess number
 def generate_number():
