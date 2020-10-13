@@ -67,7 +67,8 @@ def display_scores(count, raw_data):
 
 # Testing only
 def test():
-    eeprom.populate_mock_scores
+    eeprom.clear(4096)
+    eeprom.populate_mock_scores()
     num, results = fetch_scores()
     print(results)
     #save_scores([{"name": "me", "score": 3}])
@@ -97,7 +98,7 @@ def fetch_scores():
     # get however many scores there are
     score_count = 0
     scores = []
-    temp = []
+    temp = ['', 0]
     # Get the scores
     score_count = eeprom.read_byte(0)
     
