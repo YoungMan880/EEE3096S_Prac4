@@ -67,9 +67,10 @@ def display_scores(count, raw_data):
 
 # Testing only
 def test():
-    eeprom.write_byte(0x00, (16))
+    eeprom.populate_mock_scores
+    num, results = fetch_scores()
+    print(results)
     #save_scores([{"name": "me", "score": 3}])
-    print(eeprom.read_byte(0x00))
     exit()
 
 # Gameplay
@@ -96,12 +97,26 @@ def fetch_scores():
     # get however many scores there are
     score_count = 0
     scores = []
-    temp = {"name": "", "score": 0}
+    temp = []
     # Get the scores
+    score_count = eeprom.read_byte(0)
+    
+    for i in range(1, score_count+1):
+        current = eeprom.read_block((i*4), 4)
+        end_flag = False
+        name = ""
 
+        while (not(end_flag)):
+            if (current[3] != 255):
+                temp[1] = current[3]
+                end_flag = True
+            
+            for j in range(4):
+                name = name + (current[(i*4 )+ j])
+        
+        temp[0] = name
+        scoes.append(temp)
 
-    # convert the codes back to ascii
-     
     # return back the results
     return score_count, scores
 
