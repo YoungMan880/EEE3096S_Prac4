@@ -73,11 +73,11 @@ def test():
     num, results = fetch_scores()
     print(results)
 
-    save_scores([{"JAC", 3}])
+    save_scores([["JAC", 3]])
 
     num, results = fetch_scores()
     print(results)
-    
+
     exit()
 
 # Gameplay
@@ -144,14 +144,14 @@ def save_scores(input_scores):
     # write new scores
     eeprom.write_byte(0, count)
 
-    offset = 0;
+    offset = 0
     for i in range(1,count+1):
 
         temp = [0,0,0,0]
         if (len(scores[i][0]) < 4):
-            temp[0] = scores[i][0][0]
-            temp[1] = scores[i][0][1]
-            temp[2] = scores[i][0][2]
+            temp[0] = ord(scores[i][0][0])
+            temp[1] = ord(scores[i][0][1])
+            temp[2] = ord(scores[i][0][2])
             temp[3] = scores[i][1]
 
             eeprom.write_block(i + offset, temp)
@@ -161,9 +161,9 @@ def save_scores(input_scores):
             while (not(end_flag)):
                 temp = [0,0,0,0]
 
-                temp[0] = scores[i][0][j+0]
-                temp[1] = scores[i][0][j+1]
-                temp[2] = scores[i][0][j+2]
+                temp[0] = ord(scores[i][0][j+0])
+                temp[1] = ord(scores[i][0][j+1])
+                temp[2] = ord(scores[i][0][j+2])
 
                 eeprom.write_block(i + offset, temp)
                 offset += 1
