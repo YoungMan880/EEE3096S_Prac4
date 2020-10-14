@@ -9,6 +9,7 @@ import smbus2 as SMBUS
 # some global variables that need to change as we run the program
 end_of_game = None  # set if the user wins or ends the game
 gScores = [] # Scores from current game
+guess = 0
 
 # DEFINE THE PINS USED HERE
 LED_value = [11, 13, 15]
@@ -67,17 +68,8 @@ def display_scores(count, raw_data):
 
 # Testing only
 def test():
-    eeprom.clear(32)
-    eeprom.populate_mock_scores()
-
-    num, results = fetch_scores()
-    print(results)
-
-    save_scores([["JAC", 3]])
-
-    num, results = fetch_scores()
-    print(results)
-
+    global guess = 1
+    btn_increase_pressed(0)
     exit()
 
 # Gameplay
@@ -96,8 +88,8 @@ def setup():
     GPIO.setup(LED_value, GPIO.OUT)
     GPIO.setup(buzzer, GPIO.OUT)
     GPIO.setup(LED_accuracy, GPIO.OUT)
-    GPIO.setup(btn_increase, GPIO.IN)
-    GPIO.setup(btn_submit, GPIO.IN)
+    GPIO.setup(btn_increase, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(btn_submit, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # Load high scores
 def fetch_scores():
@@ -177,11 +169,15 @@ def generate_number():
 
 
 # Increase button pressed
-def btn_increase_pressed(channel):
+def btn_increase_pressed(random_number):
     # Increase the value shown on the LEDs
     # You can choose to have a global variable store the user's current guess, 
     # or just pull the value off the LEDs when a user makes a guess
-    pass
+    global guess
+    
+    diff = bin(abs(random_number - guess))
+    for i in range(len(diff)-2):
+        GPIO.output(LED_value[i], int(diff[i+2]))
 
 
 # Guess button
@@ -201,12 +197,15 @@ def btn_guess_pressed(channel):
 
 
 # LED Brightness
-def accuracy_leds():
+def accuracy_leds(random_value):
     # Set the brightness of the LED based on how close the guess is to the answer
     # - The % brightness should be directly proportional to the % "closeness"
     # - For example if the answer is 6 and a user guesses 4, the brightness should be at 4/6*100 = 66%
     # - If they guessed 7, the brightness would be at ((8-7)/(8-6)*100 = 50%
-    pass
+    accuracy_pwm = GPIO.PWM(LED_accuracy, 1000)
+    global guess
+
+    pwm.start((guess/random_value)*100)
 
 # Sound Buzzer
 def trigger_buzzer(offset):
