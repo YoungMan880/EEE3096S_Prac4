@@ -68,8 +68,10 @@ def display_scores(count, raw_data):
 
 # Testing only
 def test():
-    global guess = 1
-    btn_increase_pressed(0)
+    global guess
+    guess = 0
+
+    btn_increase_pressed(1)
     exit()
 
 # Gameplay
@@ -174,11 +176,14 @@ def btn_increase_pressed(random_number):
     # You can choose to have a global variable store the user's current guess, 
     # or just pull the value off the LEDs when a user makes a guess
     global guess
-    
+    GPIO.output(LED_value, 0)
+
     diff = bin(abs(random_number - guess))
+    if (len(diff) < 5):
+        diff = "0b" + ("0" * (len(diff)-5)) + diff[2:]
+
     for i in range(len(diff)-2):
         GPIO.output(LED_value[i], int(diff[i+2]))
-
 
 # Guess button
 def btn_guess_pressed(channel):
