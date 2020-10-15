@@ -97,11 +97,14 @@ def setup():
     GPIO.setup(btn_increase, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(btn_submit, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-    GPIO.add_event_detect(btn_increase, GPIO.FALLING, callback=btn_falling_callback, bouncetime=100)
-    GPIO.add_event_detect(btn_submit, GPIO.BOTH, callback=btn_submit_callback, bouncetime=100)
+    GPIO.add_event_detect(btn_increase, GPIO.FALLING, callback=btn_callback_increase, bouncetime=100)
+    GPIO.add_event_detect(btn_submit, GPIO.BOTH, callback=btn_callback_submit, bouncetime=100)
 
-def btn_falling_callback(channel):
+def btn_callback_increase(channel):
     btn_increase_callback()
+
+def btn_callback_submit(channel):
+    btn_submit_callback()
 
 def btn_increase_callback():
     global end_of_game
@@ -280,10 +283,10 @@ def trigger_buzzer(offset):
     for i in range(beeps):
         print(wait)
         buzzer_pwm.start(50)
-        sleep(0.05)
-        millis()
+        time.sleep(0.05)
+        # millis()
         buzzer_pwm.stop()
-        sleep(wait)
+        time.sleep(wait)
 
 
 if __name__ == "__main__":
