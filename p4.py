@@ -13,6 +13,7 @@ last_pressed = 0 # last time guess wass pressed
 gScore = 0 # Scores from current game
 guess = 0
 random_value = 0
+guess_edge_count = 0
 
 # DEFINE THE PINS USED HERE
 LED_value = [11, 13, 15]
@@ -107,6 +108,8 @@ def setup():
 
 def btn_increase_callback(channel):
     global end_of_game
+    global gScore
+
     print("increase pressed")
     if not(end_of_game):
         btn_increase_pressed()
@@ -114,15 +117,21 @@ def btn_increase_callback(channel):
 def btn_submit_callback(channel):
     global end_of_game
     global last_pressed
+    global guess_edge_count
+
+    guess_edge_count += 1
     milli_sec = int(round(time.time() * 1000))
     print("sumbit pressed")
     print("{0} - {1}".format(milli_sec, last_pressed))
     
 
-    if ((milli_sec - last_pressed > 1000) and (milli_sec - last_pressed < 1500)):
+    if ((milli_sec - last_pressed > 500) and (milli_sec - last_pressed < 1500)):
         end_of_game = True
-    elif not(end_of_game):
+    elif (not(end_of_game) and ((guess_edge_count % 2) == 0)):
         btn_guess_pressed()
+    else:
+        last_pressed = milli_sec
+    
 
 # Load high scores
 def fetch_scores():
@@ -206,10 +215,8 @@ def btn_increase_pressed():
     # or just pull the value off the LEDs when a user makes a guess
     global guess
     global random_value
-    global gScore
 
     guess += 1
-    gScore += 1
     GPIO.output(LED_value, 0)
 
     diff = bin(abs(random_value - guess))
