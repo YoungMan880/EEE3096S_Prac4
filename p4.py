@@ -69,7 +69,7 @@ def display_scores(count, raw_data):
     print("There are {} scores. Here are the top 3!".format(count))
     # print out the scores in the required format
     for i in range(count):
-        print("{} - {} took {} guesses".format(i, raw_data[i][0]), raw_data[i][1])
+        print("{} - {} took {} guesses".format(i, raw_data[i][0], raw_data[i][1]))
     pass
 
 # Testing only
@@ -115,13 +115,6 @@ def btn_submit_callback(channel):
         end_of_game = True
     elif not(end_of_game):
         btn_guess_pressed()
-
-def btn_submit_callback():
-   global random_value
-   global guess
-   diff = abs(random_value - guess)
-   trigger_buzzer(diff)
-   accuracy_leds()
 
 # Load high scores
 def fetch_scores():
