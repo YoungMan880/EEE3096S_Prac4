@@ -139,10 +139,8 @@ def btn_submit_callback(channel):
     print("edge count: {}".format(guess_edge_count))
 
     if ((milli_sec - last_pressed > 1000) and (milli_sec - last_pressed < 5000) and ((guess_edge_count % 2) == 0)):
-        last_pressed = 0
         end_of_game = True
     elif (not(end_of_game) and ((guess_edge_count % 2) == 0)):
-        last_pressed = 0
         btn_guess_pressed()
     else:
         last_pressed = milli_sec
@@ -259,8 +257,6 @@ def btn_guess_pressed():
     diff = abs(random_value - guess)
     global gScore
     name = "XXX"
-
-    gScore += 1
     # Change the PWM LED
     accuracy_leds()
     # if it's close enough, adjust the buzzer
@@ -282,6 +278,7 @@ def btn_guess_pressed():
         random_value = 254
         end_of_game = True
     else:
+        gScore += 1
 
 
 # LED Brightness
