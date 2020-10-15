@@ -1,7 +1,7 @@
 # Import libraries
 import RPi.GPIO as GPIO
 import random
-from time import sleep, time
+import time
 import ES2EEPROMUtils
 import os
 import smbus2 as SMBUS
@@ -97,16 +97,20 @@ def setup():
     GPIO.setup(btn_increase, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(btn_submit, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-    GPIO.add_event_detect(btn_increase, GPIO.FALLING, callback=btn_increase_callback, bouncetime=100)
+    GPIO.add_event_detect(btn_increase, GPIO.FALLING, callback=btn_falling_callback, bouncetime=100)
     GPIO.add_event_detect(btn_submit, GPIO.BOTH, callback=btn_submit_callback, bouncetime=100)
 
+def btn_falling_callback(channel):
+    btn_increase_callback()
+
 def btn_increase_callback():
+    global end_of_game
     if not(end_of_game):
         btn_increase_pressed()
 
 def btn_increase_callback():
+    global end_of_game
     global last_pressed
-    global time
     milli_sec = int(round(time.time() * 1000))
 
     if ((milli_sec - last_pressed > 1000) and (milli_sec - last_pressed < 1500)):
@@ -225,7 +229,7 @@ def btn_guess_pressed():
     global gScore
     name = "XXX"
     # Change the PWM LED
-    accuracy_leds(random_value)
+    accuracy_leds()
     # if it's close enough, adjust the buzzer
     if (diff < 4):
         trigger_buzzer(diff)
@@ -252,7 +256,7 @@ def accuracy_leds():
     accuracy_pwm = GPIO.PWM(LED_accuracy, 1000)
     global guess
 
-    pwm.start((guess/random_value)*100)
+    accuracy_pwm.start((guess/random_value)*100)
 
 # Sound Buzzer
 def trigger_buzzer(offset):
