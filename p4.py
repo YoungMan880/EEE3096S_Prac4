@@ -205,7 +205,6 @@ def save_scores(input_scores):
                 temp[2] = ord(scores[i][0][2])
             temp[3] = scores[i][1]
 
-            print("writing {}".format(temp))
             eeprom.write_block(i + offset, temp)
         else:
             end_flag = False
@@ -243,6 +242,10 @@ def btn_increase_pressed():
     global random_value
 
     guess += 1
+
+    if (guess > 7):
+        guess = 0
+
     GPIO.output(LED_value, 0)
 
     print("gueess: {0} - Value: {1}".format(guess, random_value))
