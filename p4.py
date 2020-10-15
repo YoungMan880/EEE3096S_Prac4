@@ -184,6 +184,7 @@ def save_scores(input_scores):
     count, scores = fetch_scores()
     # include new score
     scores.extend(input_scores)
+    print("extended: {}".format(scores))
     # sort
     scores.sort(key=lambda x: x[1])
     # update total amount of scores
@@ -269,6 +270,8 @@ def btn_guess_pressed():
         # - tell the user and prompt them for a name
         print("correct guess!")
         name = input("What is your name?")
+
+        print("saving score {}".format([[name, gScore]]))
         save_scores([[name, gScore]])
 
         guess = 255
