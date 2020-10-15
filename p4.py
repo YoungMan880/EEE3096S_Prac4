@@ -43,6 +43,9 @@ def menu():
     global gScore
     global end_of_game
     global random_value
+    gScore = 0
+    guess_edge_count = 0
+    guess = 0
 
     option = input("Select an option:   H - View High Scores     P - Play Game       Q - Quit\n")
     option = option.upper()
@@ -64,7 +67,7 @@ def menu():
         print("Press and hold the guess button to cancel your game")
         random_value = generate_number()
         while not(end_of_game):
-            play()
+            pass
     elif option == "Q":
         print("Come back soon!")
         exit()
@@ -190,7 +193,6 @@ def save_scores(input_scores):
 
     offset = 1
     for i in range(0,count):
-
         temp = [0,0,0,255]
         if (len(scores[i][0]) < 4):
             temp[0] = ord(scores[i][0][0])
@@ -198,6 +200,7 @@ def save_scores(input_scores):
             temp[2] = ord(scores[i][0][2])
             temp[3] = scores[i][1]
 
+            print("writing {}".format(temp))
             eeprom.write_block(i + offset, temp)
         else:
             end_flag = False
@@ -209,6 +212,7 @@ def save_scores(input_scores):
                 temp[1] = ord(scores[i][0][j+1])
                 temp[2] = ord(scores[i][0][j+2])
 
+                print("writing {}".format(temp))
                 eeprom.write_block(i + offset, temp)
                 offset += 1
                 j += 1
