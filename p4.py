@@ -37,7 +37,7 @@ def welcome():
 
 # Print the game menu
 def menu():
-
+    global gScore
     global end_of_game
     global random_value
 
@@ -52,6 +52,7 @@ def menu():
     elif option == "P":
         os.system('clear')
         end_of_game = False
+        gScore = 0
         print("Starting a new round!")
         print("Use the buttons on the Pi to make and submit your guess!")
         print("Press and hold the guess button to cancel your game")
@@ -98,6 +99,8 @@ def setup():
     GPIO.setup(LED_accuracy, GPIO.OUT)
     GPIO.setup(btn_increase, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(btn_submit, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+    GPIO.ouput(LED_value, 0)
 
     GPIO.add_event_detect(btn_increase, GPIO.FALLING, callback=btn_increase_callback, bouncetime=100)
     GPIO.add_event_detect(btn_submit, GPIO.BOTH, callback=btn_submit_callback, bouncetime=100)
