@@ -83,17 +83,6 @@ def display_scores(count, raw_data):
         print("{0} - {1} took {2} guesses".format((i + 1), raw_data[i][0], raw_data[i][1]))
     pass
 
-# Testing only
-def test():
-    num, scores = eeprrom.read_block(0,32)
-    print(scores)
-    eeprom.write_block(1, [2])
-    num, scores = eeprrom.read_block(0,32)
-    print(scores)
-# Gameplay
-def play():
-    pass
-
 
 # Setup Pins
 def setup():
@@ -106,17 +95,21 @@ def setup():
 
     GPIO.setmode(GPIO.BOARD)
 
+    #Set all pin modes
     GPIO.setup(LED_value, GPIO.OUT)
     GPIO.setup(buzzer, GPIO.OUT)
     GPIO.setup(LED_accuracy, GPIO.OUT)
     GPIO.setup(btn_increase, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(btn_submit, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
+    #setup both pwm
     accuracy_pwm = GPIO.PWM(LED_accuracy, 1000)
     buzzer_pwm = GPIO.PWM(buzzer, 800)
 
     GPIO.output(LED_value, 0)
 
+    # setup interrupts
+    # the bouncetimes are quite high because anything else creates errors
     GPIO.add_event_detect(btn_increase, GPIO.FALLING, callback=btn_increase_callback, bouncetime=500)
     GPIO.add_event_detect(btn_submit, GPIO.BOTH, callback=btn_submit_callback, bouncetime=300)
 
@@ -124,7 +117,6 @@ def btn_increase_callback(channel):
     global end_of_game
     global gScore
 
-    print("increase pressed")
     if not(end_of_game):
         btn_increase_pressed()
 
@@ -133,14 +125,15 @@ def btn_submit_callback(channel):
     global last_pressed
     global guess_edge_count
 
+    # edge count is used to make sure button actions are only truggired once per press
     guess_edge_count += 1
     milli_sec = int(round(time.time() * 1000))
-    print("sumbit pressed")
-    print("edge count: {}".format(guess_edge_count))
 
+    #Hold to reset
     if ((milli_sec - last_pressed > 1000) and (milli_sec - last_pressed < 5000) and ((guess_edge_count % 2) == 0)):
         last_pressed = 0
         end_of_game = True
+    #trigger guess
     elif (not(end_of_game) and ((guess_edge_count % 2) == 0)):
         last_pressed = 0
         btn_guess_pressed()
@@ -196,7 +189,7 @@ def save_scores(input_scores):
     eeprom.write_byte(0, count)
 
     offset = 1
-    for i in range(0,count):
+    for i in range(0, count):
         temp = [0,0,0,255]
         if (len(scores[i][0]) < 4):
             temp[0] = ord(scores[i][0][0])
@@ -222,7 +215,6 @@ def save_scores(input_scores):
                 if (len(scores[i][0]) < (j)):
                     end_flag = True
 
-                print("writing {}".format(temp))
                 eeprom.write_block(i + offset, temp)
                 offset += 1
                 j += 1
@@ -302,6 +294,7 @@ def accuracy_leds():
     global random_value
     global accuracy_pwm
     global guess
+    
     if(guess>random_value):
      accuracy_pwm.start(((8-guess) / (8-random_value))*100)
     else:
@@ -324,6 +317,7 @@ def trigger_buzzer(offset):
     else:
         beeps = 1
     
+    #set interval to wait between 0.005s beeps
     wait = ((1 - (0.05)*beeps)/beeps)
 
     for i in range(beeps):
