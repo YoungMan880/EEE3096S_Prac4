@@ -118,7 +118,7 @@ def setup():
     GPIO.output(LED_value, 0)
 
     GPIO.add_event_detect(btn_increase, GPIO.FALLING, callback=btn_increase_callback, bouncetime=500)
-    GPIO.add_event_detect(btn_submit, GPIO.BOTH, callback=btn_submit_callback, bouncetime=150)
+    GPIO.add_event_detect(btn_submit, GPIO.BOTH, callback=btn_submit_callback, bouncetime=300)
 
 def btn_increase_callback(channel):
     global end_of_game
@@ -214,9 +214,9 @@ def save_scores(input_scores):
                 temp = [0,0,0,0]
 
                 temp[0] = ord(scores[i][0][j+0])
-                if (len(scores[i][0]) > (j+3)):
+                if (len(scores[i][0]) > (j+1)):
                     temp[1] = ord(scores[i][0][j+1])
-                if (len(scores[i][0]) > (j+4)):
+                if (len(scores[i][0]) > (j+2)):
                     temp[2] = ord(scores[i][0][j+2])
 
                 if (len(scores[i][0]) < (j)):
