@@ -71,7 +71,7 @@ def display_scores(count, raw_data):
     print("There are {} scores. Here are the top 3!".format(count))
     # print out the scores in the required format
     for i in range(3):
-        print("{} - {} took {} guesses".format(i + 1, raw_data[i][0], raw_data[i][1]))
+        print("{0} - {1} took {2} guesses".format((i + 1), raw_data[i][0], raw_data[i][1]))
     pass
 
 # Testing only
@@ -100,7 +100,7 @@ def setup():
     GPIO.setup(btn_increase, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(btn_submit, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-    GPIO.ouput(LED_value, 0)
+    GPIO.output(LED_value, 0)
 
     GPIO.add_event_detect(btn_increase, GPIO.FALLING, callback=btn_increase_callback, bouncetime=100)
     GPIO.add_event_detect(btn_submit, GPIO.BOTH, callback=btn_submit_callback, bouncetime=100)
