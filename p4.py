@@ -276,7 +276,8 @@ def accuracy_leds():
     global accuracy_pwm
     global guess
 
-    accuracy_pwm.start(((8-guess) / (8-random_value))*100)
+    #accuracy_pwm.start(((8-guess) / (8-random_value))*100)
+    accuracy_pwm.start(100)
 
 # Sound Buzzer
 def trigger_buzzer(offset):
