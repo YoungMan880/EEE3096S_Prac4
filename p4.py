@@ -127,7 +127,7 @@ def btn_submit_callback(channel):
     print("sumbit pressed")
     
 
-    if ((milli_sec - last_pressed > 500) and (milli_sec - last_pressed < 1500)):
+    if ((milli_sec - last_pressed > 1000) and (milli_sec - last_pressed < 5000)):
         end_of_game = True
     elif (not(end_of_game) and ((guess_edge_count % 2) == 0)):
         btn_guess_pressed()
@@ -221,9 +221,13 @@ def btn_increase_pressed():
     guess += 1
     GPIO.output(LED_value, 0)
 
+    print("gueess: {0} - Value: {1}".format(guess, random_value))
+
     diff = bin(abs(random_value - guess))
     if (len(diff) < 5):
         diff = "0b" + ("0" * (5 - len(diff))) + diff[2:]
+
+    print(diff)
 
     for i in range(len(diff)-2):
         GPIO.output(LED_value[i], int(diff[i+2]))
