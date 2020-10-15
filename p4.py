@@ -56,6 +56,9 @@ def menu():
         os.system('clear')
         end_of_game = False
         gScore = 0
+        guess_edge_count = 0
+        guess = 0
+
         print("Starting a new round!")
         print("Use the buttons on the Pi to make and submit your guess!")
         print("Press and hold the guess button to cancel your game")
