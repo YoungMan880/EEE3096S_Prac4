@@ -14,6 +14,8 @@ gScore = 0 # Scores from current game
 guess = 0
 random_value = 0
 guess_edge_count = 0
+accuracy_pwm = None
+buzzer_pwm = None
 
 # DEFINE THE PINS USED HERE
 LED_value = [11, 13, 15]
@@ -93,6 +95,9 @@ def setup():
     # Setup regular GPIO
     # Setup PWM channels
     # Setup debouncing and callbacks
+    global buzzer_pwm
+    global accuracy_pwm
+
     GPIO.setmode(GPIO.BOARD)
 
     GPIO.setup(LED_value, GPIO.OUT)
@@ -122,9 +127,9 @@ def btn_submit_callback(channel):
     global last_pressed
     global guess_edge_count
 
-    guess_edge_count += 1
     milli_sec = int(round(time.time() * 1000))
     print("sumbit pressed")
+    print(" edge count: {}".format(guess_edge_count))
     
 
     if ((milli_sec - last_pressed > 1000) and (milli_sec - last_pressed < 5000)):
@@ -133,6 +138,8 @@ def btn_submit_callback(channel):
         btn_guess_pressed()
     else:
         last_pressed = milli_sec
+
+    guess_edge_count += 1
     
 
 # Load high scores
