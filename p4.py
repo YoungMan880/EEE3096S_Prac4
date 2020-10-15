@@ -191,7 +191,7 @@ def save_scores(input_scores):
     offset = 1
     for i in range(0,count):
 
-        temp = [0,0,0,0]
+        temp = [0,0,0,255]
         if (len(scores[i][0]) < 4):
             temp[0] = ord(scores[i][0][0])
             temp[1] = ord(scores[i][0][1])
@@ -261,13 +261,17 @@ def btn_guess_pressed():
     if (diff == 0):
         # - Disable LEDs and Buzzer
         GPIO.output(LED_value, 0)
-        guess = 0
-        random_value = 100
+
         # - tell the user and prompt them for a name
         print("correct guess!")
         name = input("What is your name?")
         save_scores([[name, gScore]])
+
+        guess = 255
+        random_value = 254
         end_of_game = True
+    else:
+        gScore += 1
 
 
 # LED Brightness
