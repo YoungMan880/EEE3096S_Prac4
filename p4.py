@@ -112,7 +112,7 @@ def setup():
     GPIO.output(LED_value, 0)
 
     GPIO.add_event_detect(btn_increase, GPIO.FALLING, callback=btn_increase_callback, bouncetime=500)
-    GPIO.add_event_detect(btn_submit, GPIO.BOTH, callback=btn_submit_callback, bouncetime=100)
+    GPIO.add_event_detect(btn_submit, GPIO.BOTH, callback=btn_submit_callback, bouncetime=150)
 
 def btn_increase_callback(channel):
     global end_of_game
@@ -132,7 +132,7 @@ def btn_submit_callback(channel):
     print("sumbit pressed")
     print("edge count: {}".format(guess_edge_count))
 
-    if ((milli_sec - last_pressed > 1000) and (milli_sec - last_pressed < 5000)):
+    if ((milli_sec - last_pressed > 1000) and (milli_sec - last_pressed < 5000) and ((guess_edge_count % 2) == 0)):
         end_of_game = True
     elif (not(end_of_game) and ((guess_edge_count % 2) == 0)):
         btn_guess_pressed()
