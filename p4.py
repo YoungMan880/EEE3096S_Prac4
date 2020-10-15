@@ -8,7 +8,7 @@ import smbus2 as SMBUS
 import signal
 
 # some global variables that need to change as we run the program
-end_of_game = None  # set if the user wins or ends the game
+end_of_game = True  # set if the user wins or ends the game
 last_pressed = 0 # last time guess wass pressed
 gScore = 0 # Scores from current game
 guess = 0
@@ -51,6 +51,7 @@ def menu():
         display_scores(s_count, ss)
     elif option == "P":
         os.system('clear')
+        end_of_game = False
         print("Starting a new round!")
         print("Use the buttons on the Pi to make and submit your guess!")
         print("Press and hold the guess button to cancel your game")
@@ -103,6 +104,7 @@ def setup():
 
 def btn_increase_callback(channel):
     global end_of_game
+    print("increase pressed")
     if not(end_of_game):
         btn_increase_pressed()
 
@@ -110,6 +112,9 @@ def btn_submit_callback(channel):
     global end_of_game
     global last_pressed
     milli_sec = int(round(time.time() * 1000))
+    print("sumbit pressed")
+    print("{0} - {1}".format(milli_sec, last_pressed))
+    
 
     if ((milli_sec - last_pressed > 1000) and (milli_sec - last_pressed < 1500)):
         end_of_game = True
@@ -200,6 +205,7 @@ def btn_increase_pressed():
     global random_value
 
     guess += 1
+    gScore += 1
     GPIO.output(LED_value, 0)
 
     diff = bin(abs(random_value - guess))
@@ -269,7 +275,6 @@ def trigger_buzzer(offset):
     wait = ((1 - (0.05)*beeps)/beeps)
 
     for i in range(beeps):
-        print(wait)
         buzzer_pwm.start(50)
         time.sleep(0.05)
         buzzer_pwm.stop()
