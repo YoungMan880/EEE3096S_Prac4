@@ -106,12 +106,20 @@ def btn_increase_callback():
 
 def btn_increase_callback():
     global last_pressed
+    global time
     milli_sec = int(round(time.time() * 1000))
 
     if ((milli_sec - last_pressed > 1000) and (milli_sec - last_pressed < 1500)):
         end_of_game = True
     elif not(end_of_game):
         btn_guess_pressed()
+
+def btn_submit_callback():
+   global random_value
+   global guess
+   diff = abs(random_value - guess)
+   trigger_buzzer(diff)
+   accuracy_leds()
 
 # Load high scores
 def fetch_scores():
@@ -212,6 +220,7 @@ def btn_guess_pressed():
     # If they've pressed and held the button, clear up the GPIO and take them back to the menu screen
     # Compare the actual value with the user value displayed on the LEDs
     global random_value
+    global guess
     diff = abs(random_value - guess)
     global gScore
     name = "XXX"
