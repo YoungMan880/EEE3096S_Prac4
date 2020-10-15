@@ -206,6 +206,7 @@ def btn_increase_pressed():
     # or just pull the value off the LEDs when a user makes a guess
     global guess
     global random_value
+    global gScore
 
     guess += 1
     gScore += 1
