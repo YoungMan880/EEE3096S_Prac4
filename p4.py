@@ -199,8 +199,10 @@ def save_scores(input_scores):
         temp = [0,0,0,255]
         if (len(scores[i][0]) < 4):
             temp[0] = ord(scores[i][0][0])
-            temp[1] = ord(scores[i][0][1])
-            temp[2] = ord(scores[i][0][2])
+            if (len(scores[i][0]) > 2):
+                temp[1] = ord(scores[i][0][1])
+            elif (len(scores[i][0]) > 3):
+                temp[2] = ord(scores[i][0][2])
             temp[3] = scores[i][1]
 
             print("writing {}".format(temp))
@@ -212,8 +214,13 @@ def save_scores(input_scores):
                 temp = [0,0,0,0]
 
                 temp[0] = ord(scores[i][0][j+0])
-                temp[1] = ord(scores[i][0][j+1])
-                temp[2] = ord(scores[i][0][j+2])
+                if (len(scores[i][0]) > (j+1)):
+                    temp[1] = ord(scores[i][0][j+1])
+                if (len(scores[i][0]) > (j+2)):
+                    temp[2] = ord(scores[i][0][j+2])
+
+                if (len(scores[i][0]) < (j)):
+                    end_flag = True
 
                 print("writing {}".format(temp))
                 eeprom.write_block(i + offset, temp)
