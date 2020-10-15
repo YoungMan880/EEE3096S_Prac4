@@ -165,6 +165,7 @@ def fetch_scores():
         name = ""
 
         for j in range(3):
+            if not(chr(current[j]) == "\x00")
             temp[0] = temp[0] + chr(current[j])
         
         if (current[3] != 0):
