@@ -231,13 +231,14 @@ def btn_increase_pressed():
     print("gueess: {0} - Value: {1}".format(guess, random_value))
 
     diff = bin(abs(random_value - guess))
+    print(diff)
     if (len(diff) < 5):
         diff = "0b" + ("0" * (5 - len(diff))) + diff[2:]
 
     print(diff)
-
-    for i in range(len(diff)-2):
-        GPIO.output(LED_value[i], int(diff[i+2]))
+    if not((len(diff)-2) > 3):
+        for i in range(len(diff)-2):
+            GPIO.output(LED_value[i], int(diff[i+2]))
 
 # Guess button
 def btn_guess_pressed():
