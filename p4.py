@@ -227,7 +227,6 @@ def btn_guess_pressed():
     if (diff == 0):
         # - Disable LEDs and Buzzer
         GPIO.output(LED_value, 0)
-        global guess
         guess = 0
         random_value = 100
         # - tell the user and prompt them for a name
