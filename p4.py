@@ -112,7 +112,7 @@ def setup():
     GPIO.output(LED_value, 0)
 
     GPIO.add_event_detect(btn_increase, GPIO.FALLING, callback=btn_increase_callback, bouncetime=500)
-    GPIO.add_event_detect(btn_submit, GPIO.BOTH, callback=btn_submit_callback, bouncetime=500)
+    GPIO.add_event_detect(btn_submit, GPIO.BOTH, callback=btn_submit_callback, bouncetime=200)
 
 def btn_increase_callback(channel):
     global end_of_game
@@ -230,7 +230,7 @@ def btn_increase_pressed():
 
     print("gueess: {0} - Value: {1}".format(guess, random_value))
 
-    diff = bin(abs(random_value - guess))
+    diff = bin(abs(guess))
     print(diff)
     if (len(diff) < 5):
         diff = "0b" + ("0" * (5 - len(diff))) + diff[2:]
