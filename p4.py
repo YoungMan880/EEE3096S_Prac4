@@ -101,6 +101,9 @@ def setup():
     GPIO.setup(btn_increase, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(btn_submit, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
+    accuracy_pwm = GPIO.PWM(LED_accuracy, 1000)
+    buzzer_pwm = GPIO.PWM(buzzer, 800)
+
     GPIO.output(LED_value, 0)
 
     GPIO.add_event_detect(btn_increase, GPIO.FALLING, callback=btn_increase_callback, bouncetime=100)
@@ -122,7 +125,6 @@ def btn_submit_callback(channel):
     guess_edge_count += 1
     milli_sec = int(round(time.time() * 1000))
     print("sumbit pressed")
-    print("{0} - {1}".format(milli_sec, last_pressed))
     
 
     if ((milli_sec - last_pressed > 500) and (milli_sec - last_pressed < 1500)):
@@ -260,11 +262,10 @@ def accuracy_leds():
     # - For example if the answer is 6 and a user guesses 4, the brightness should be at 4/6*100 = 66%
     # - If they guessed 7, the brightness would be at ((8-7)/(8-6)*100 = 50%
     global random_value
-
-    accuracy_pwm = GPIO.PWM(LED_accuracy, 1000)
+    global accuracy_pwm
     global guess
 
-    accuracy_pwm.start((guess/random_value)*100)
+    accuracy_pwm.start(((8-guess) / (8-random_value))*100)
 
 # Sound Buzzer
 def trigger_buzzer(offset):
@@ -274,7 +275,7 @@ def trigger_buzzer(offset):
     # If the user is off by an absolute value of 3, the buzzer should sound once every second
     # If the user is off by an absolute value of 2, the buzzer should sound twice every second
     # If the user is off by an absolute value of 1, the buzzer should sound 4 times a second
-    buzzer_pwm = GPIO.PWM(buzzer, 800)
+    global buzzer_pwm
 
     if (offset == 1):
         beeps = 4
