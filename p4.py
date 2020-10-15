@@ -68,8 +68,8 @@ def display_scores(count, raw_data):
     # print the scores to the screen in the expected format
     print("There are {} scores. Here are the top 3!".format(count))
     # print out the scores in the required format
-    for i in range(count):
-        print("{} - {} took {} guesses".format(i, raw_data[i][0], raw_data[i][1]))
+    for i in range(3):
+        print("{} - {} took {} guesses".format(i + 1, raw_data[i][0], raw_data[i][1]))
     pass
 
 # Testing only
@@ -227,7 +227,9 @@ def btn_guess_pressed():
     if (diff == 0):
         # - Disable LEDs and Buzzer
         GPIO.output(LED_value, 0)
-        GPIO.setup([btn_increase, btn_submit], GPIO.OUT)
+        global guess
+        guess = 0
+        random_value = 100
         # - tell the user and prompt them for a name
         print("correct guess!")
         name = input("What is your name?")
