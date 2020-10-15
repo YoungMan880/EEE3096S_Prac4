@@ -68,16 +68,17 @@ def display_scores(count, raw_data):
     # print the scores to the screen in the expected format
     print("There are {} scores. Here are the top 3!".format(count))
     # print out the scores in the required format
+    for i in range(count):
+        print("{} - {} took {} guesses".format(i, raw_data[i][0]), raw_data[i][1])
     pass
 
 # Testing only
 def test():
-    global guess
-    guess = 0
-
-    btn_increase_pressed(1)
-    exit()
-
+    num, scores = eeprrom.read_block(0,32)
+    print(scores)
+    eeprom.write_block(1, [2])
+    num, scores = eeprrom.read_block(0,32)
+    print(scores)
 # Gameplay
 def play():
     pass
@@ -135,8 +136,6 @@ def fetch_scores():
     for i in range(1, score_count+1):
         current = eeprom.read_block((i), 4)
         name = ""
-        print(i)
-        print(current)
 
         for j in range(3):
             temp[0] = temp[0] + chr(current[j])
@@ -207,6 +206,7 @@ def btn_increase_pressed():
     global guess
     global random_value
 
+    guess += 1
     GPIO.output(LED_value, 0)
 
     diff = bin(abs(random_value - guess))
