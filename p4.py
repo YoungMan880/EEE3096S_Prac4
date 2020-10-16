@@ -117,7 +117,8 @@ def btn_increase_callback(channel):
     global end_of_game
     global gScore
 
-    if not(end_of_game):
+    milli_sec = int(round(time.time() * 1000))
+    if not(end_of_game or (milli_sec - last_pressed < 1000)):
         btn_increase_pressed()
 
 def btn_submit_callback(channel):
@@ -131,11 +132,9 @@ def btn_submit_callback(channel):
 
     #Hold to reset
     if ((milli_sec - last_pressed > 1000) and (milli_sec - last_pressed < 3000) and ((guess_edge_count % 2) == 0)):
-        last_pressed = 0
         end_of_game = True
     #trigger guess
     elif (not(end_of_game) and ((guess_edge_count % 2) == 0)):
-        last_pressed = 0
         btn_guess_pressed()
     else:
         last_pressed = milli_sec
