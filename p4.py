@@ -43,9 +43,6 @@ def menu():
     global gScore
     global end_of_game
     global random_value
-    gScore = 0
-    guess_edge_count = 0
-    guess = 0
 
     option = input("Select an option:   H - View High Scores     P - Play Game       Q - Quit\n")
     option = option.upper()
@@ -131,7 +128,7 @@ def btn_submit_callback(channel):
     milli_sec = int(round(time.time() * 1000))
 
     #Hold to reset
-    if ((milli_sec - last_pressed > 1000) and (milli_sec - last_pressed < 3000) and ((guess_edge_count % 2) == 0)):
+    if ((milli_sec - last_pressed > 1000) and (milli_sec - last_pressed < 2000) and ((guess_edge_count % 2) == 0)):
         end_of_game = True
     #trigger guess
     elif (not(end_of_game) and ((guess_edge_count % 2) == 0)):
