@@ -269,7 +269,7 @@ def btn_guess_pressed():
         # - tell the user and prompt them for a name
         end_of_game = True
         print("correct guess!")
-        name = input("What is your name?")
+        name = input("What is your name? ")
 
         save_scores([[name, gScore]])
 
