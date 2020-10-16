@@ -258,8 +258,10 @@ def btn_guess_pressed():
     # Compare the actual value with the user value displayed on the LEDs
     global random_value
     global guess
-    diff = abs(random_value - guess)
     global gScore
+    global end_of_game
+
+    diff = abs(random_value - guess)
     name = "XXX"
     gScore += 1
     # Change the PWM LED
