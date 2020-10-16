@@ -5,15 +5,14 @@ import time
 import ES2EEPROMUtils
 import os
 import smbus2 as SMBUS
-import signal
 
 # some global variables that need to change as we run the program
 end_of_game = True  # set if the user wins or ends the game
 last_pressed = 0 # last time guess wass pressed
-gScore = 0 # Scores from current game
-guess = 0
-random_value = 0
-guess_edge_count = 0
+score = 0 # Scores from current game
+guess = 0 # Current user guess
+random_value = 0 #Value user is trying to find
+guess_edge_count = 0 #Number of edges on guess button
 accuracy_pwm = None
 buzzer_pwm = None
 
@@ -40,7 +39,7 @@ def welcome():
 
 # Print the game menu
 def menu():
-    global gScore
+    global score
     global end_of_game
     global random_value
 
@@ -55,7 +54,7 @@ def menu():
     elif option == "P":
         os.system('clear')
         end_of_game = False
-        gScore = 0
+        score = 0
         guess_edge_count = 0
         guess = 0
 
@@ -92,17 +91,18 @@ def setup():
 
     GPIO.setmode(GPIO.BOARD)
 
-    #Set all pin modes
+    # Set all pin modes
     GPIO.setup(LED_value, GPIO.OUT)
     GPIO.setup(buzzer, GPIO.OUT)
     GPIO.setup(LED_accuracy, GPIO.OUT)
     GPIO.setup(btn_increase, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(btn_submit, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-    #setup both pwm
+    # Setup both pwm
     accuracy_pwm = GPIO.PWM(LED_accuracy, 1000)
     buzzer_pwm = GPIO.PWM(buzzer, 800)
 
+    # Overwrite any LED outputs from previous code run
     GPIO.output(LED_value, 0)
 
     # setup interrupts
@@ -112,7 +112,7 @@ def setup():
 
 def btn_increase_callback(channel):
     global end_of_game
-    global gScore
+    global score
 
     milli_sec = int(round(time.time() * 1000))
     if not(end_of_game or (milli_sec - last_pressed < 1000)):
@@ -149,22 +149,28 @@ def fetch_scores():
     
     end_flag = False
     temp = ["", 0]
-    for i in range(1, score_count+1):
-        current = eeprom.read_block((i), 4)
-        name = ""
 
-        for j in range(3):
-            if not(chr(current[j]) == "\x00"):
-                temp[0] = temp[0] + chr(current[j])
-        
-        if (current[3] != 0):
-            temp[1] = current[3]      
-            end_flag = True  
-        
-        if (end_flag):
-            scores.append(temp)
-            end_flag = False
-            temp = ["", 0]
+    for i in range(1, score_count+1):
+        #Get one block of scores
+        current = eeprom.read_block((i), 4)
+
+        end_flag = False
+
+        # allows looping over multiple blocks to read more name chracters 
+        while not(end_flag):
+            # Convert name from read
+            for j in range(3):
+                if not(chr(current[j]) == "\x00"):
+                    temp[0] = temp[0] + chr(current[j])
+            
+            # If the value of the score is 0 then the next block contains the rest of the name chars
+            if (current[3] != 0):
+                temp[1] = current[3]      
+                end_flag = True  
+            
+            if (end_flag):
+                scores.append(temp)
+                temp = ["", 0]
 
     # return back the results
     return score_count, scores
@@ -183,24 +189,33 @@ def save_scores(input_scores):
     # write new scores
     eeprom.write_byte(0, count)
 
+    # Offset firstly bypasses block with count
+    # Offset also shows how many blocks were used for
+    # more name chars
     offset = 1
     for i in range(0, count):
         temp = [0,0,0,255]
+        
+        #for 3 characters or less
         if (len(scores[i][0]) < 4):
+            # For 3 characters or less
+            # Save name
             temp[0] = ord(scores[i][0][0])
             if (len(scores[i][0]) > 1):
                 temp[1] = ord(scores[i][0][1])
             if (len(scores[i][0]) > 2):
                 temp[2] = ord(scores[i][0][2])
+            # Save score
             temp[3] = scores[i][1]
 
             eeprom.write_block(i + offset, temp)
         else:
+            #For more than 3 characters
             end_flag = False
             j = 0
             while (not(end_flag)):
                 temp = [0,0,0,0]
-
+                # Save name
                 temp[0] = ord(scores[i][0][j+0])
                 if (len(scores[i][0]) > (j+1)):
                     temp[1] = ord(scores[i][0][j+1])
@@ -209,6 +224,9 @@ def save_scores(input_scores):
 
                 if (len(scores[i][0]) < (j)):
                     end_flag = True
+                    # Save score
+                    temp[3] = scores[i][1]
+
 
                 eeprom.write_block(i + offset, temp)
                 offset += 1
@@ -231,15 +249,19 @@ def btn_increase_pressed():
 
     guess += 1
 
+    # loop guess back to 0
     if (guess > 7):
         guess = 0
 
+    # Clean LEDS
     GPIO.output(LED_value, 0)
 
+    # string binary of abs difference from target
     diff = bin(abs(guess))
+    # Pad the string
     if (len(diff) < 5):
         diff = "0b" + ("0" * (5 - len(diff))) + diff[2:]
-
+    #write to LEDS
     if not((len(diff)-2) > 3):
         for i in range(len(diff)-2):
             GPIO.output(LED_value[i], int(diff[i+2]))
@@ -250,12 +272,13 @@ def btn_guess_pressed():
     # Compare the actual value with the user value displayed on the LEDs
     global random_value
     global guess
-    global gScore
+    global score
     global end_of_game
 
+    # abs diff from target
     diff = abs(random_value - guess)
     name = "XXX"
-    gScore += 1
+    score += 1
     # Change the PWM LED
     accuracy_leds()
     # if it's close enough, adjust the buzzer
@@ -271,8 +294,10 @@ def btn_guess_pressed():
         print("correct guess!")
         name = input("What is your name?")
 
-        save_scores([[name, gScore]])
+        # save to eeprom
+        save_scores([[name, score]])
 
+        #just in case
         guess = 255
         random_value = 254
 
@@ -286,6 +311,8 @@ def accuracy_leds():
     global accuracy_pwm
     global guess
     
+    # Accounts for differnet cases to not have errors
+    # such as divide by 0
     if (guess>random_value):
         accuracy_pwm.start(((8-guess) / (8-random_value))*100)
     elif (random_value > 0):
@@ -316,8 +343,10 @@ def trigger_buzzer(offset):
     wait = ((1 - (0.05)*beeps)/beeps)
 
     for i in range(beeps):
+        #beep
         buzzer_pwm.start(50)
         time.sleep(0.05)
+        #wait
         buzzer_pwm.stop()
         time.sleep(wait)
 
