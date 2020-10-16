@@ -273,6 +273,7 @@ def btn_guess_pressed():
         GPIO.output(LED_value, 0)
 
         # - tell the user and prompt them for a name
+        end_of_game = True
         print("correct guess!")
         name = input("What is your name?")
 
@@ -281,8 +282,6 @@ def btn_guess_pressed():
 
         guess = 255
         random_value = 254
-        end_of_game = True
-
 
 # LED Brightness
 def accuracy_leds():
