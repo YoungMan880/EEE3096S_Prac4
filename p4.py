@@ -111,7 +111,7 @@ def setup():
     # setup interrupts
     # the bouncetimes are quite high because anything else creates errors
     GPIO.add_event_detect(btn_increase, GPIO.FALLING, callback=btn_increase_callback, bouncetime=500)
-    GPIO.add_event_detect(btn_submit, GPIO.BOTH, callback=btn_submit_callback, bouncetime=300)
+    GPIO.add_event_detect(btn_submit, GPIO.BOTH, callback=btn_submit_callback, bouncetime=250)
 
 def btn_increase_callback(channel):
     global end_of_game
@@ -130,7 +130,7 @@ def btn_submit_callback(channel):
     milli_sec = int(round(time.time() * 1000))
 
     #Hold to reset
-    if ((milli_sec - last_pressed > 1000) and (milli_sec - last_pressed < 5000) and ((guess_edge_count % 2) == 0)):
+    if ((milli_sec - last_pressed > 1000) and (milli_sec - last_pressed < 3000) and ((guess_edge_count % 2) == 0)):
         last_pressed = 0
         end_of_game = True
     #trigger guess
@@ -180,7 +180,6 @@ def save_scores(input_scores):
     count, scores = fetch_scores()
     # include new score
     scores.extend(input_scores)
-    print("extended: {}".format(scores))
     # sort
     scores.sort(key=lambda x: x[1])
     # update total amount of scores
@@ -295,10 +294,14 @@ def accuracy_leds():
     global accuracy_pwm
     global guess
     
-    if(guess>random_value):
-     accuracy_pwm.start(((8-guess) / (8-random_value))*100)
+    if (guess>random_value):
+        accuracy_pwm.start(((8-guess) / (8-random_value))*100)
+    elif (random_value > 0):
+        accuracy_pwm.start((guess/random_value)*100)
     else:
-     accuracy_pwm.start((guess/random_value)*100)
+        accuracy_pwm.start(((8-guess) / (8-random_value))*100)
+    
+
 
 # Sound Buzzer
 def trigger_buzzer(offset):
