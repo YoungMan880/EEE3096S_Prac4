@@ -236,8 +236,6 @@ def btn_increase_pressed():
 
     GPIO.output(LED_value, 0)
 
-    print("gueess: {0} - Value: {1}".format(guess, random_value))
-
     diff = bin(abs(guess))
     if (len(diff) < 5):
         diff = "0b" + ("0" * (5 - len(diff))) + diff[2:]
@@ -289,13 +287,10 @@ def accuracy_leds():
     global guess
     
     if (guess>random_value):
-        print((((8-guess) / (8-random_value))*100))
         accuracy_pwm.start(((8-guess) / (8-random_value))*100)
     elif (random_value > 0):
-        print((guess/random_value)*100)
         accuracy_pwm.start((guess/random_value)*100)
     else:
-        print(((8-guess) / (8-random_value))*100)
         accuracy_pwm.start(((8-guess) / (8-random_value))*100)
     
 
