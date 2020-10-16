@@ -279,7 +279,6 @@ def btn_guess_pressed():
         print("correct guess!")
         name = input("What is your name?")
 
-        print("saving score {}".format([]))
         save_scores([[name, gScore]])
 
         guess = 255
