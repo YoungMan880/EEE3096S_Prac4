@@ -289,7 +289,7 @@ def accuracy_leds():
     global guess
     
     if (guess>random_value):
-        print((((8-guess) / (8-random_value))*100)
+        print((((8-guess) / (8-random_value))*100))
         accuracy_pwm.start(((8-guess) / (8-random_value))*100)
     elif (random_value > 0):
         print((guess/random_value)*100)
